@@ -27,8 +27,8 @@ public class StudentReq {
   @JsonFormat(pattern = "dd-MM-yyyy")
   private Date birthday;
 
-  @NotNull(message = "adrress is must require")
-  private String adrress;
+  @NotNull(message = "address is must require")
+  private String address;
 
   private String email;
 
@@ -54,7 +54,7 @@ public class StudentReq {
 
   @AssertTrue(message = "email must null or must valid")
   public boolean isEmailValid() {
-    if (email == null || email.equals(""))
+    if (email == null || email.isEmpty())
       return true;
 
     return Pattern.matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$", email);

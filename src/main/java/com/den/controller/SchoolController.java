@@ -19,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/school")
 public class SchoolController {
-  @Autowired
-  private SchoolService schoolService;
+  private final SchoolService schoolService;
+
+  public SchoolController(SchoolService schoolService) {
+    this.schoolService = schoolService;
+  }
 
   @PostMapping("")
   public ResponseEntity<?> add(@RequestBody @Valid SchoolReq schoolReq) {

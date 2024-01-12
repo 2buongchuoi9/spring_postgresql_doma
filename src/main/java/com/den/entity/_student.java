@@ -33,7 +33,7 @@ public class _student {
 
   private Date birthday;
 
-  private String adrress;
+  private String address;
 
   private String email;
 

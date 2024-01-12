@@ -64,6 +64,11 @@ public class ClazzRepo implements MainRepo<_clazz, Long> {
     throw new UnsupportedOperationException("Unimplemented method 'countAll'");
   }
 
+  public int countById(Long clazzId) {
+    var c = new _clazz_();
+    return entityql.from(c).where(v -> v.eq(c.id, clazzId)).execute().size();
+  }
+
   public boolean exitsByCode(String code) {
     return exitsByCodeNotId(code, null);
   }

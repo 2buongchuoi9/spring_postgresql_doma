@@ -1,5 +1,7 @@
 package com.den.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,25 +47,41 @@ public class StudentController {
       @RequestParam(name = "limit", defaultValue = "5") int limit,
       @RequestParam(name = "page", defaultValue = "1") int page) {
 
-    List<_student> list = studentService.findAll();
-    return ResponseEntity.ok().body(new MainRes(Map.of("list", list, "count", list.size())));
+    Page<_student> list = studentService.findAll(PageRequest.of(page, limit));
+    return ResponseEntity.ok().body(new MainRes(list));
   }
 
-  // get all
-  @PostMapping("/search/{keySearch}")
+  // search
+  @GetMapping("/search/{keySearch}")
   public ResponseEntity<?> search(
       @PathVariable String keySearch,
       @RequestParam(name = "limit", defaultValue = "5") int limit,
       @RequestParam(name = "page", defaultValue = "1") int page) {
 
-    List<_student> list = studentService.findAll();
-    return ResponseEntity.ok().body(new MainRes(Map.of("list", list, "count", list.size())));
+    Page<_student> list = studentService.search(PageRequest.of(page, limit), keySearch);
+    return ResponseEntity.ok().body(new MainRes(list));
   }
 
   // get one
   @GetMapping("/{id}")
   public ResponseEntity<?> findOne(@PathVariable Long id) {
     return ResponseEntity.ok().body(studentService.findById(id));
+  }
+
+  // find by clazzId
+  @GetMapping("/class/{clazzId}")
+  public ResponseEntity<?> findByClazzId(@PathVariable Long clazzId,
+      @RequestParam(name = "limit", defaultValue = "5") int limit,
+      @RequestParam(name = "page", defaultValue = "1") int page) {
+    return ResponseEntity.ok().body(studentService.findByClazzId(PageRequest.of(page, limit), clazzId));
+  }
+
+  // find by schoolId
+  @GetMapping("/school/{schoolId}")
+  public ResponseEntity<?> findBySchoolId(@PathVariable Long schoolId,
+      @RequestParam(name = "limit", defaultValue = "5") int limit,
+      @RequestParam(name = "page", defaultValue = "1") int page) {
+    return ResponseEntity.ok().body(studentService.findBySchoolId(PageRequest.of(page, limit), schoolId));
   }
 
   // delete

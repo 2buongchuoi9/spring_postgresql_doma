@@ -18,13 +18,16 @@ import com.den.repository.SchoolRepo;
 
 @Service
 public class ClazzService implements MainService<ClazzReq, _clazz, Long> {
-  @Autowired
-  private ClazzRepo clazzRepo;
-  @Autowired
-  private SchoolRepo schoolRepo;
+  private final ClazzRepo clazzRepo;
+  private final SchoolRepo schoolRepo;
 
-  @Autowired
-  private ModelMapper mapper;
+  private final ModelMapper mapper;
+
+  public ClazzService(ClazzRepo clazzRepo, SchoolRepo schoolRepo, ModelMapper mapper) {
+    this.clazzRepo = clazzRepo;
+    this.schoolRepo = schoolRepo;
+    this.mapper = mapper;
+  }
 
   @Override
   public _clazz add(ClazzReq t) {
@@ -64,6 +67,10 @@ public class ClazzService implements MainService<ClazzReq, _clazz, Long> {
     if (!clazzRepo.update(id, clazz))
       throw new UnKnowError("update fail");
     return findById(id);
+  }
+
+  public boolean checkCountMember(Long clzzId) {
+    return clazzRepo.countById(clzzId) >= 40;
   }
 
 }
