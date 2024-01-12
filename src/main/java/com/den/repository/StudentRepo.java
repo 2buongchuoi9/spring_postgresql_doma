@@ -1,16 +1,27 @@
 package com.den.repository;
 
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.seasar.doma.jdbc.criteria.Entityql;
 import org.seasar.doma.jdbc.criteria.NativeSql;
+import org.seasar.doma.jdbc.criteria.metamodel.PropertyMetamodel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.den.entity._school_;
 import com.den.entity._student;
 import com.den.entity._student_;
+import com.den.exceptions.UnKnowError;
+import com.den.repository.customPage.Page;
+import com.den.repository.customPage.PageImpl;
+import com.den.repository.customPage.Pageble;
+import com.den.repository.customPage.Sort;
+import com.den.repository.customPage.Spec;
 
 @Repository
 public class StudentRepo implements MainRepo<_student, Long> {
@@ -22,6 +33,7 @@ public class StudentRepo implements MainRepo<_student, Long> {
   @Override
   public _student insert(_student t) {
     var c = new _student_();
+
     return entityql.insert(c, t).execute().getEntity();
   }
 
@@ -55,6 +67,41 @@ public class StudentRepo implements MainRepo<_student, Long> {
     return entityql.from(c).fetch();
   }
 
+  public Page<_student> findAll(Pageble pageble, Spec... specs) {
+    int offset = (pageble.getPageNumber() - 1) * pageble.getPageSize();
+    int limit = pageble.getPageSize();
+
+    Stream<Spec> stream = List.of(specs).stream();
+
+    Sort sort = pageble.getSort();
+
+    var c = new _student_();
+
+    List<_student> list = nativeSql.from(c).where(v -> {
+      stream.forEach(v -> {
+        if (v.isLike()) {
+
+        }
+      });
+    })
+        .limit(limit)
+        .offset(offset)
+        .orderBy(v -> {
+          if (sort.isAsc())
+            v.asc(getProperty(sort.getProperty()));
+          else
+            v.desc(getProperty(sort.getProperty()));
+        }).execute();
+
+    int total = nativeSql.from(c).where(v -> {
+
+    })
+        .execute().size();
+
+    Page<_student> page = new PageImpl<>(list, pageble, total);
+    return page;
+  }
+
   @Override
   public Optional<_student> findById(Long id) {
     var c = new _student_();
@@ -83,6 +130,13 @@ public class StudentRepo implements MainRepo<_student, Long> {
         })
         .fetchOptional();
     return optional.isPresent();
+  }
+
+  private PropertyMetamodel<?> getProperty(String name) {
+    _student_ c = new _student_();
+    List<PropertyMetamodel<?>> list = c.allPropertyMetamodels();
+    return list.stream().filter(v -> v.getName().equals(name)).findFirst()
+        .orElseThrow(() -> new UnKnowError("error dev in property name in Sort"));
   }
 
 }

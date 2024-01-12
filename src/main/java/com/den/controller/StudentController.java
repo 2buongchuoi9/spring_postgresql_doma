@@ -1,15 +1,21 @@
 package com.den.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.den.entity._clazz;
+import com.den.entity._student;
 import com.den.exceptions.NotFoundError;
 import com.den.model.request.ClazzReq;
 import com.den.model.request.StudentReq;
+import com.den.model.response.MainRes;
 import com.den.service.StudentService;
 
 import jakarta.validation.Valid;
+
+import java.util.List;
+import java.util.Map;
 
 import org.seasar.doma.Update;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +41,23 @@ public class StudentController {
 
   // get all
   @GetMapping("")
-  public ResponseEntity<?> getAll() {
-    return ResponseEntity.ok().body(studentService.findAll());
+  public ResponseEntity<?> getAll(
+      @RequestParam(name = "limit", defaultValue = "5") int limit,
+      @RequestParam(name = "page", defaultValue = "1") int page) {
+
+    List<_student> list = studentService.findAll();
+    return ResponseEntity.ok().body(new MainRes(Map.of("list", list, "count", list.size())));
+  }
+
+  // get all
+  @PostMapping("/search/{keySearch}")
+  public ResponseEntity<?> search(
+      @PathVariable String keySearch,
+      @RequestParam(name = "limit", defaultValue = "5") int limit,
+      @RequestParam(name = "page", defaultValue = "1") int page) {
+
+    List<_student> list = studentService.findAll();
+    return ResponseEntity.ok().body(new MainRes(Map.of("list", list, "count", list.size())));
   }
 
   // get one

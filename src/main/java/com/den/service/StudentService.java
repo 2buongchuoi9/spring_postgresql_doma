@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.den.entity._student;
+import com.den.entity._student_;
 import com.den.entity._student;
 import com.den.entity._student;
 import com.den.exceptions.BabRequestError;
@@ -53,7 +54,11 @@ public class StudentService implements MainService<StudentReq, _student, Long> {
 
   @Override
   public boolean delete(Long id) {
-    throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    if (!studentRepo.findById(id).isPresent())
+      throw new NotFoundError("not found studentId=" + id);
+
+    return studentRepo.delete(id);
+
   }
 
   @Override
