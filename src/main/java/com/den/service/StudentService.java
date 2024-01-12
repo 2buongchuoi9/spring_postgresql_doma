@@ -17,6 +17,8 @@ import com.den.exceptions.UnKnowError;
 import com.den.model.request.StudentReq;
 import com.den.model.request.StudentReq;
 import com.den.repository.StudentRepo;
+import com.den.repository.customPage.Page;
+import com.den.repository.customPage.Pageble;
 import com.den.repository.ClazzRepo;
 import com.den.repository.SchoolRepo;
 import com.den.repository.StudentRepo;
@@ -38,6 +40,12 @@ public class StudentService implements MainService<StudentReq, _student, Long> {
 
     if (!clazzRepo.findById(t.getClazzId()).isPresent())
       throw new BabRequestError("not found classId=" + t.getClazzId());
+
+    int countMember = clazzRepo.countById(t.getClazzId());
+    if (countMember >= 40)
+      throw new BabRequestError(
+          "class (" + t.getClazzId() + ") is not more 40 member (current is " + countMember + ")");
+
     _student student = mapper.map(t, _student.class);
     return studentRepo.insert(student);
   }
@@ -50,6 +58,22 @@ public class StudentService implements MainService<StudentReq, _student, Long> {
   @Override
   public List<_student> findAll() {
     return studentRepo.getAll();
+  }
+
+  public Page<_student> findAll(Pageble pageble) {
+    return studentRepo.findAll(pageble);
+  }
+
+  public Page<_student> search(Pageble pageble, String keySearch) {
+    return studentRepo.search(pageble, keySearch);
+  }
+
+  public Page<_student> findByClazzId(Pageble pageble, Long clazzId) {
+    return studentRepo.findByClazzId(pageble, clazzId);
+  }
+
+  public Page<_student> findBySchoolId(Pageble pageble, Long schoolId) {
+    return studentRepo.findBySchoolId(pageble, schoolId);
   }
 
   @Override
@@ -68,6 +92,11 @@ public class StudentService implements MainService<StudentReq, _student, Long> {
 
     if (!clazzRepo.findById(studentReq.getClazzId()).isPresent())
       throw new BabRequestError("Not found classId=" + studentReq.getClazzId());
+
+    int countMember = clazzRepo.countById(studentReq.getClazzId());
+    if (countMember >= 40)
+      throw new BabRequestError(
+          "class (" + studentReq.getClazzId() + ") is not more 40 member (current is " + countMember + ")");
 
     _student clazz = mapper.map(studentReq, _student.class);
     if (!studentRepo.update(id, clazz))

@@ -6,7 +6,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Spec {
-  private boolean like;
+  private Boolean like = null;
+  private Boolean equals;
   private String property;
   private String value;
+
 }

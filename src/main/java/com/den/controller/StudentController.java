@@ -10,6 +10,8 @@ import com.den.exceptions.NotFoundError;
 import com.den.model.request.ClazzReq;
 import com.den.model.request.StudentReq;
 import com.den.model.response.MainRes;
+import com.den.repository.customPage.Page;
+import com.den.repository.customPage.Pageble;
 import com.den.service.StudentService;
 
 import jakarta.validation.Valid;
@@ -45,25 +47,41 @@ public class StudentController {
       @RequestParam(name = "limit", defaultValue = "5") int limit,
       @RequestParam(name = "page", defaultValue = "1") int page) {
 
-    List<_student> list = studentService.findAll();
-    return ResponseEntity.ok().body(new MainRes(Map.of("list", list, "count", list.size())));
+    Page<_student> list = studentService.findAll(Pageble.of(page, limit));
+    return ResponseEntity.ok().body(new MainRes(list));
   }
 
-  // get all
-  @PostMapping("/search/{keySearch}")
+  // search
+  @GetMapping("/search/{keySearch}")
   public ResponseEntity<?> search(
       @PathVariable String keySearch,
       @RequestParam(name = "limit", defaultValue = "5") int limit,
       @RequestParam(name = "page", defaultValue = "1") int page) {
 
-    List<_student> list = studentService.findAll();
-    return ResponseEntity.ok().body(new MainRes(Map.of("list", list, "count", list.size())));
+    Page<_student> list = studentService.search(Pageble.of(page, limit), keySearch);
+    return ResponseEntity.ok().body(new MainRes(list));
   }
 
   // get one
   @GetMapping("/{id}")
   public ResponseEntity<?> findOne(@PathVariable Long id) {
     return ResponseEntity.ok().body(studentService.findById(id));
+  }
+
+  // find by clazzId
+  @GetMapping("/class/{clazzId}")
+  public ResponseEntity<?> findByClazzId(@PathVariable Long clazzId,
+      @RequestParam(name = "limit", defaultValue = "5") int limit,
+      @RequestParam(name = "page", defaultValue = "1") int page) {
+    return ResponseEntity.ok().body(studentService.findByClazzId(Pageble.of(page, limit), clazzId));
+  }
+
+  // find by schoolId
+  @GetMapping("/school/{schoolId}")
+  public ResponseEntity<?> findBySchoolId(@PathVariable Long schoolId,
+      @RequestParam(name = "limit", defaultValue = "5") int limit,
+      @RequestParam(name = "page", defaultValue = "1") int page) {
+    return ResponseEntity.ok().body(studentService.findBySchoolId(Pageble.of(page, limit), schoolId));
   }
 
   // delete

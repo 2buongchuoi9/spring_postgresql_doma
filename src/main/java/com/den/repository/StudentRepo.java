@@ -67,36 +67,139 @@ public class StudentRepo implements MainRepo<_student, Long> {
     return entityql.from(c).fetch();
   }
 
-  public Page<_student> findAll(Pageble pageble, Spec... specs) {
+  public Page<_student> findAll(Pageble pageble) {
     int offset = (pageble.getPageNumber() - 1) * pageble.getPageSize();
     int limit = pageble.getPageSize();
-
-    Stream<Spec> stream = List.of(specs).stream();
 
     Sort sort = pageble.getSort();
 
     var c = new _student_();
 
-    List<_student> list = nativeSql.from(c).where(v -> {
-      stream.forEach(v -> {
-        if (v.isLike()) {
-
-        }
-      });
-    })
+    List<_student> list = nativeSql.from(c)
         .limit(limit)
         .offset(offset)
         .orderBy(v -> {
-          if (sort.isAsc())
-            v.asc(getProperty(sort.getProperty()));
+          if (sort != null)
+            if (sort.isAsc())
+              v.asc(getProperty(sort.getProperty()));
+            else
+              v.desc(getProperty(sort.getProperty()));
           else
-            v.desc(getProperty(sort.getProperty()));
+            v.asc(c.id);
         }).execute();
 
-    int total = nativeSql.from(c).where(v -> {
+    int total = nativeSql.from(c).execute().size();
 
-    })
-        .execute().size();
+    Page<_student> page = new PageImpl<>(list, pageble, total);
+    return page;
+  }
+
+  public Page<_student> findByClazzId(Pageble pageble, Long id) {
+    int offset = (pageble.getPageNumber() - 1) * pageble.getPageSize();
+    int limit = pageble.getPageSize();
+
+    Sort sort = pageble.getSort();
+
+    var c = new _student_();
+
+    List<_student> list = nativeSql.from(c)
+        .where(v -> {
+          v.eq(c.clazzId, id);
+        })
+        .limit(limit)
+        .offset(offset)
+        .orderBy(v -> {
+          if (sort != null)
+            if (sort.isAsc())
+              v.asc(getProperty(sort.getProperty()));
+            else
+              v.desc(getProperty(sort.getProperty()));
+          else
+            v.asc(c.id);
+        }).execute();
+
+    int total = nativeSql.from(c)
+        .where(v -> {
+          v.eq(c.clazzId, id);
+        })
+        .execute()
+        .size();
+
+    Page<_student> page = new PageImpl<>(list, pageble, total);
+    return page;
+  }
+
+  public Page<_student> findBySchoolId(Pageble pageble, Long id) {
+    int offset = (pageble.getPageNumber() - 1) * pageble.getPageSize();
+    int limit = pageble.getPageSize();
+
+    Sort sort = pageble.getSort();
+
+    var c = new _student_();
+    var s = new _school_();
+
+    List<_student> list = nativeSql.from(c)
+        .innerJoin(s, on -> on.eq(c.clazzId, s.id))
+        .where(v -> v.eq(s.id, id))
+        .limit(limit)
+        .offset(offset)
+        .orderBy(v -> {
+          if (sort != null)
+            if (sort.isAsc())
+              v.asc(getProperty(sort.getProperty()));
+            else
+              v.desc(getProperty(sort.getProperty()));
+          else
+            v.asc(c.id);
+        }).execute();
+
+    int total = nativeSql.from(c)
+        .where(v -> v.eq(s.id, id))
+        .execute()
+        .size();
+
+    Page<_student> page = new PageImpl<>(list, pageble, total);
+    return page;
+  }
+
+  public Page<_student> search(Pageble pageble, String keySearch) {
+    int offset = (pageble.getPageNumber() - 1) * pageble.getPageSize();
+    int limit = pageble.getPageSize();
+
+    Sort sort = pageble.getSort();
+
+    var c = new _student_();
+
+    List<_student> list = nativeSql.from(c)
+        .where(v -> {
+          v.or(() -> v.like(c.name, "%" + keySearch + "%"));
+          v.or(() -> v.like(c.code, "%" + keySearch + "%"));
+          v.or(() -> v.like(c.adrress, "%" + keySearch + "%"));
+          v.or(() -> v.like(c.email, "%" + keySearch + "%"));
+          v.or(() -> v.like(c.phone, "%" + keySearch + "%"));
+        })
+        .limit(limit)
+        .offset(offset)
+        .orderBy(v -> {
+          if (sort != null)
+            if (sort.isAsc())
+              v.asc(getProperty(sort.getProperty()));
+            else
+              v.desc(getProperty(sort.getProperty()));
+          else
+            v.asc(c.id);
+        }).execute();
+
+    int total = nativeSql.from(c)
+        .where(v -> {
+          v.or(() -> v.like(c.name, "%" + keySearch + "%"));
+          v.or(() -> v.like(c.code, "%" + keySearch + "%"));
+          v.or(() -> v.like(c.adrress, "%" + keySearch + "%"));
+          v.or(() -> v.like(c.email, "%" + keySearch + "%"));
+          v.or(() -> v.like(c.phone, "%" + keySearch + "%"));
+        })
+        .execute()
+        .size();
 
     Page<_student> page = new PageImpl<>(list, pageble, total);
     return page;
@@ -136,7 +239,7 @@ public class StudentRepo implements MainRepo<_student, Long> {
     _student_ c = new _student_();
     List<PropertyMetamodel<?>> list = c.allPropertyMetamodels();
     return list.stream().filter(v -> v.getName().equals(name)).findFirst()
-        .orElseThrow(() -> new UnKnowError("error dev in property name in Sort"));
+        .orElseThrow(() -> new UnKnowError("error dev in property name"));
   }
 
 }

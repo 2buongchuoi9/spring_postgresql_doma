@@ -66,4 +66,8 @@ public class ClazzService implements MainService<ClazzReq, _clazz, Long> {
     return findById(id);
   }
 
+  public boolean checkCountMember(Long clzzId) {
+    return clazzRepo.countById(clzzId) >= 40;
+  }
+
 }
