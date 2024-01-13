@@ -1,8 +1,8 @@
 insert into (name , clazz_id, birthday,address,email,phone,status,image)
 values (
+     /*student.name*/'',
+     /*student.classId*/'',
     /*student.image*/'',
-    /*student.name*/'',
-    /*student.classId*/'',
     /*student.birthday*/'',
     /*student.address*/'',
     /*student.email*/'',
