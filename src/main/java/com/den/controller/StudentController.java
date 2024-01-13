@@ -1,99 +1,86 @@
 package com.den.controller;
 
+import com.den.entity._student;
+import com.den.model.request.StudentReq;
+import com.den.service.StudentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.den.entity._clazz;
-import com.den.entity._student;
-import com.den.exceptions.NotFoundError;
-import com.den.model.request.ClazzReq;
-import com.den.model.request.StudentReq;
-import com.den.model.response.MainRes;
-import com.den.service.StudentService;
-
-import jakarta.validation.Valid;
-
-import java.util.List;
-import java.util.Map;
-
-import org.seasar.doma.Update;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/student")
+@Tag(name = "student controller", description = "used criteria")
 public class StudentController {
 
-  @Autowired
-  private StudentService studentService;
+    private final StudentService studentService;
 
-  // add
-  @PostMapping("")
-  public ResponseEntity<?> add(@RequestBody @Valid StudentReq studentReq) {
-    return ResponseEntity.ok().body(studentService.add(studentReq));
-  }
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
+    }
 
-  // get all
-  @GetMapping("")
-  public ResponseEntity<?> getAll(
-      @RequestParam(name = "limit", defaultValue = "5") int limit,
-      @RequestParam(name = "page", defaultValue = "1") int page) {
+    @Operation(summary = "add student")
+    @PostMapping("")
+    public ResponseEntity<_student> add(@RequestBody @Valid StudentReq studentReq) {
+        return ResponseEntity.ok().body(studentService.add(studentReq));
+    }
 
-    Page<_student> list = studentService.findAll(PageRequest.of(page, limit));
-    return ResponseEntity.ok().body(new MainRes(list));
-  }
+    @Operation(summary = "get all student")
+    @GetMapping("")
+    public ResponseEntity<Page<_student>> getAll(
+            @RequestParam(name = "limit", defaultValue = "5") int limit,
+            @RequestParam(name = "page", defaultValue = "1") int page) {
 
-  // search
-  @GetMapping("/search/{keySearch}")
-  public ResponseEntity<?> search(
-      @PathVariable String keySearch,
-      @RequestParam(name = "limit", defaultValue = "5") int limit,
-      @RequestParam(name = "page", defaultValue = "1") int page) {
+        Page<_student> list = studentService.findAll(PageRequest.of(page, limit));
+        return ResponseEntity.ok().body(list);
+    }
 
-    Page<_student> list = studentService.search(PageRequest.of(page, limit), keySearch);
-    return ResponseEntity.ok().body(new MainRes(list));
-  }
+    @Operation(summary = "search student")
+    @GetMapping("/search/{keySearch}")
+    public ResponseEntity<Page<_student>> search(
+            @PathVariable String keySearch,
+            @RequestParam(name = "limit", defaultValue = "5") int limit,
+            @RequestParam(name = "page", defaultValue = "1") int page) {
 
-  // get one
-  @GetMapping("/{id}")
-  public ResponseEntity<?> findOne(@PathVariable Long id) {
-    return ResponseEntity.ok().body(studentService.findById(id));
-  }
+        Page<_student> list = studentService.search(PageRequest.of(page, limit), keySearch);
+        return ResponseEntity.ok().body(list);
+    }
 
-  // find by clazzId
-  @GetMapping("/class/{clazzId}")
-  public ResponseEntity<?> findByClazzId(@PathVariable Long clazzId,
-      @RequestParam(name = "limit", defaultValue = "5") int limit,
-      @RequestParam(name = "page", defaultValue = "1") int page) {
-    return ResponseEntity.ok().body(studentService.findByClazzId(PageRequest.of(page, limit), clazzId));
-  }
+    @Operation(summary = "get one student")
+    @GetMapping("/{id}")
+    public ResponseEntity<_student> findOne(@PathVariable Long id) {
+        return ResponseEntity.ok().body(studentService.findById(id));
+    }
 
-  // find by schoolId
-  @GetMapping("/school/{schoolId}")
-  public ResponseEntity<?> findBySchoolId(@PathVariable Long schoolId,
-      @RequestParam(name = "limit", defaultValue = "5") int limit,
-      @RequestParam(name = "page", defaultValue = "1") int page) {
-    return ResponseEntity.ok().body(studentService.findBySchoolId(PageRequest.of(page, limit), schoolId));
-  }
+    @Operation(summary = "get all student by classId")
+    @GetMapping("/class/{clazzId}")
+    public ResponseEntity<Page<_student>> findByClazzId(@PathVariable Long clazzId,
+                                           @RequestParam(name = "limit", defaultValue = "5") int limit,
+                                           @RequestParam(name = "page", defaultValue = "1") int page) {
+        return ResponseEntity.ok().body(studentService.findByClazzId(PageRequest.of(page, limit), clazzId));
+    }
 
-  // delete
-  @DeleteMapping("/{id}")
-  public ResponseEntity<?> delete(@PathVariable Long id) {
-    return ResponseEntity.ok().body(studentService.delete(id));
-  }
+    @Operation(summary = "get all student by schoolId")
+    @GetMapping("/school/{schoolId}")
+    public ResponseEntity<Page<_student>> findBySchoolId(@PathVariable Long schoolId,
+                                            @RequestParam(name = "limit", defaultValue = "5") int limit,
+                                            @RequestParam(name = "page", defaultValue = "1") int page) {
+        return ResponseEntity.ok().body(studentService.findBySchoolId(PageRequest.of(page, limit), schoolId));
+    }
 
-  // update
-  @PostMapping("/{id}")
-  public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid StudentReq studentReq) {
-    return ResponseEntity.ok().body(studentService.update(id, studentReq));
-  }
+    @Operation(summary = "delete student")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+        return ResponseEntity.ok().body(studentService.delete(id));
+    }
+
+    @Operation(summary = "update student")
+    @PostMapping("/{id}")
+    public ResponseEntity<_student> update(@PathVariable Long id, @RequestBody @Valid StudentReq studentReq) {
+        return ResponseEntity.ok().body(studentService.update(id, studentReq));
+    }
 
 }

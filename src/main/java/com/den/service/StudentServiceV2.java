@@ -51,11 +51,38 @@ public class StudentServiceV2 {
         return studentDao.insert(student) == 1;
     }
 
+    public boolean add(_student student) throws  BabRequestError {
+//    check email
+        if (student.getEmail() != null && !student.getEmail().isEmpty())
+            Optional.ofNullable(studentDao.selectByEmail(student.getEmail())).ifPresent(v -> {
+                throw new BabRequestError("duplicate email=" + student.getEmail());
+            });
+//      check clazz
+        Optional.ofNullable(clazzDao.selectById(student.getClazzId())).orElseThrow(() -> new BabRequestError("not found classId=" + student.getClazzId()));
+
+//      check member
+        int countMember = clazzDao.countById(student.getClazzId());
+        if (countMember >= 40)
+            throw new BabRequestError("class (" + student.getClazzId() + ") is not more 40 member (current is " + countMember + ")");
+
+        return studentDao.insert(student) == 1;
+    }
+
+
+
 
     public _student findById(Long id) {
         return Optional.ofNullable(studentDao.selectById(id)).orElseThrow(() -> new NotFoundError("not found school id=" + id));
     }
 
+    public Optional<_student> findByIdOptional(Long id){
+        if(id == null) return Optional.empty();
+        return Optional.ofNullable(studentDao.selectById(id));
+    }
+
+    public List<_student> findAll(){
+        return studentDao.selectAll();
+    }
 
     public Page<_student> findAll(Pageable pageable) {
         int limit = pageable.getPageSize();
@@ -124,6 +151,20 @@ public class StudentServiceV2 {
         _student clazz = mapper.map(studentReq, _student.class);
         clazz.setId(id);
         return studentDao.update(clazz)==1;
+    }
+    public boolean update(_student student) throws BabRequestError{
+        Optional.ofNullable(studentDao.selectByEmailNotId(student.getEmail(), student.getId())).ifPresent(v -> {
+            throw new BabRequestError("duplicate email=" + student.getEmail());
+        });
+
+        Optional.ofNullable(clazzDao.selectById(student.getClazzId())).orElseThrow(() ->
+                new BabRequestError("not found clazzId=" + student.getClazzId()));
+
+        int countMember = clazzDao.countById(student.getClazzId());
+        if (countMember >= 40)
+            throw new BabRequestError("class (" + student.getClazzId() + ") is not more 40 member (current is " + countMember + ")");
+
+        return studentDao.update(student)==1;
     }
 
 }

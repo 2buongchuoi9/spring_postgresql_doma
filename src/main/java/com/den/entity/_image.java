@@ -5,10 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+import org.seasar.doma.*;
 
 @Entity(metamodel = @Metamodel)
 @Table(name = "image")
@@ -16,10 +13,16 @@ import org.seasar.doma.Table;
 @NoArgsConstructor
 public class _image {
     @Id
-    @NotNull(message = "link is must require")
-    private String link;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public _image(String link) {
-        this.link = link;
+    @Column(name = "public_id")
+    private String publicId;
+
+    private  String url;
+
+    public _image(String publicId,String url) {
+        this.publicId = publicId;
+        this.url = url;
     }
 }

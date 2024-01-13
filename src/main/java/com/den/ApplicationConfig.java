@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +55,12 @@ public class ApplicationConfig {
     config.put("api_secret", apiSecret);
     config.put("secure", true);
     return new Cloudinary(config);
+  }
+
+
+  @Bean
+  public SimpleDateFormat getSimpleDateFormat() {
+    return new SimpleDateFormat("dd/MM/yyyy");
   }
 
 }

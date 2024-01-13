@@ -3,31 +3,41 @@ package com.den.controller;
 import com.den.entity._student;
 import com.den.model.request.StudentReq;
 import com.den.model.response.MainRes;
+import com.den.service.ExcelUploadService;
 import com.den.service.StudentServiceV2;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.models.annotations.OpenAPI30;
 import jakarta.validation.Valid;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v2/student")
+@Tag(description = "used SQL templates, date format is dd-MM-yyyy", name = "student v2 controller")
 public class StudentControllerV2 {
 
     private final StudentServiceV2 studentServiceV2;
 
-    public StudentControllerV2(StudentServiceV2 studentServiceV2) {
+    public StudentControllerV2(StudentServiceV2 studentServiceV2, ExcelUploadService excelUploadService) {
         this.studentServiceV2 = studentServiceV2;
     }
 
-    // add
+    @Operation(summary = "add student")
     @PostMapping("")
     public ResponseEntity<?> add(@RequestBody @Valid StudentReq studentReq) {
         return ResponseEntity.ok().body(studentServiceV2.add(studentReq));
     }
 
-    // get all
+    @Operation(summary = "get all student ")
     @GetMapping("")
     public ResponseEntity<?> getAll(@RequestParam(name = "limit", defaultValue = "5") int limit, @RequestParam(name = "page", defaultValue = "1") int page) {
 
@@ -38,7 +48,7 @@ public class StudentControllerV2 {
         return ResponseEntity.ok().body(new MainRes(list));
     }
 
-    // search
+    @Operation(summary = "search student for key search")
     @GetMapping("/search/{keySearch}")
     public ResponseEntity<?> search(@PathVariable String keySearch, @RequestParam(name = "limit", defaultValue = "5") int limit, @RequestParam(name = "page", defaultValue = "1") int page) {
 
@@ -46,13 +56,14 @@ public class StudentControllerV2 {
         return ResponseEntity.ok().body(new MainRes(list));
     }
 
-    // get one
+
+    @Operation(summary = "get one student ")
     @GetMapping("/{id}")
     public ResponseEntity<?> findOne(@PathVariable Long id) {
         return ResponseEntity.ok().body(studentServiceV2.findById(id));
     }
 
-    // find by clazzId
+    @Operation(summary = "get all student by clazzId ")
     @GetMapping("/class/{clazzId}")
     public ResponseEntity<?> findByClazzId(
             @PathVariable Long clazzId, @RequestParam(name = "limit", defaultValue = "5") int limit,
@@ -60,7 +71,7 @@ public class StudentControllerV2 {
         return ResponseEntity.ok().body(studentServiceV2.findByClazzId(PageRequest.of(page, limit), clazzId));
     }
 
-    // find by schoolId
+    @Operation(summary = "get all student by schoolId")
     @GetMapping("/school/{schoolId}")
     public ResponseEntity<?> findBySchoolId(@PathVariable Long schoolId,
                                             @RequestParam(name = "limit", defaultValue = "5") int limit,
@@ -68,17 +79,19 @@ public class StudentControllerV2 {
         return ResponseEntity.ok().body(studentServiceV2.findBySchoolId(PageRequest.of(page, limit), schoolId));
     }
 
-    // delete
+    @Operation(summary = "delete student")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return ResponseEntity.ok().body(studentServiceV2.delete(id));
     }
 
-    // update
+    @Operation(summary = "update student")
     @PostMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid StudentReq studentReq) {
         return ResponseEntity.ok().body(studentServiceV2.update(id, studentReq));
     }
+
+
 
 
 }

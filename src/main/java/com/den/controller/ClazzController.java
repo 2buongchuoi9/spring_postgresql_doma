@@ -1,5 +1,7 @@
 package com.den.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,40 +20,46 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/class")
+@Tag(name = "class controller",description = "used criteria ")
 public class ClazzController {
 
-  @Autowired
-  private ClazzService clazzService;
+  private final ClazzService clazzService;
 
-  // add
+  public ClazzController(ClazzService clazzService) {
+    this.clazzService = clazzService;
+  }
+
+  @Operation(summary = "add class")
   @PostMapping("")
-  public ResponseEntity<?> add(@RequestBody @Valid ClazzReq clazzReq) {
+  public ResponseEntity<_clazz> add(@RequestBody @Valid ClazzReq clazzReq) {
     return ResponseEntity.ok().body(clazzService.add(clazzReq));
   }
 
-  // get all
+  @Operation(summary = "get all class")
   @GetMapping("")
-  public ResponseEntity<?> getAll() {
+  public ResponseEntity<List<_clazz>> getAll() {
     return ResponseEntity.ok().body(clazzService.findAll());
   }
 
-  // get one
+  @Operation(summary = "get one class")
   @GetMapping("/{id}")
-  public ResponseEntity<?> findOne(@PathVariable Long id) {
+  public ResponseEntity<_clazz> findOne(@PathVariable Long id) {
     return ResponseEntity.ok().body(clazzService.findById(id));
   }
 
-  // delete
+  @Operation(summary = "delete class")
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> delete(@PathVariable Long id) {
+  public ResponseEntity<Boolean> delete(@PathVariable Long id) {
     return ResponseEntity.ok().body(clazzService.delete(id));
   }
 
-  // update
+  @Operation(summary = "update class")
   @PostMapping("/{id}")
-  public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid ClazzReq clazzReq) {
+  public ResponseEntity<_clazz> update(@PathVariable Long id, @RequestBody @Valid ClazzReq clazzReq) {
     return ResponseEntity.ok().body(clazzService.update(id, clazzReq));
   }
 

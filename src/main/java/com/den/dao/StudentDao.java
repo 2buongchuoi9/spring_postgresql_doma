@@ -25,6 +25,8 @@ public interface StudentDao {
     @Select
     _student selectByEmail(String email);
 
+    @Select
+    List<_student> selectAll();
 
     @Select
     List<_student> selectAll(SelectOptions options);
@@ -38,12 +40,8 @@ public interface StudentDao {
     @Select
     int countByClazzId(Long clazzId);
 
-//    @Select
-//    List<_student> selectBySchoolId(Long schoolId,SelectOptions options);
-
     @Select
     int countAll();
-
 
     @Select
     List<_student> selectByKeySearch(String keySearch,SelectOptions options);
@@ -59,4 +57,6 @@ public interface StudentDao {
 
     @Select
     _student selectByEmailNotId(String email, Long id);
+
+
 }

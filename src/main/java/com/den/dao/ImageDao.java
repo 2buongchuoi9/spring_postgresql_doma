@@ -2,6 +2,7 @@ package com.den.dao;
 
 import com.den.entity._image;
 import org.seasar.doma.Dao;
+import org.seasar.doma.Delete;
 import org.seasar.doma.Insert;
 import org.seasar.doma.Select;
 import org.seasar.doma.boot.ConfigAutowireable;
@@ -15,12 +16,15 @@ public interface ImageDao {
     @Insert
     int insert(_image image);
 
+    @Delete
+    int delete(_image image);
+
     @Select
     List<_image> selectAll(SelectOptions options);
 
     @Select
-    _image selectByLink(String link);
+    int countAll();
 
     @Select
-    int countAll();
+    _image selectById(Long id);
 }

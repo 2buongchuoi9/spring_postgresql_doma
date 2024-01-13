@@ -20,26 +20,50 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class _student {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String name;
+    private String name;
 
-  private String code;
+    private String code;
 
-  @Column(name = "clazz_id")
-  private Long clazzId;
+    @Column(name = "clazz_id")
+    private Long clazzId;
 
-  private Date birthday;
+    private Date birthday;
 
-  private String address;
+    private String address;
 
-  private String email;
+    private String email;
 
-  private String phone;
+    private String phone;
 
-  private int status;
+    private int status;
 
-  private String image;
+    private String image;
+
+    public _student(Long id, String name, Long clazzId, Date birthday, String address, String email, String phone, int status, String image) {
+        this.id = id;
+        this.name = name;
+        this.clazzId = clazzId;
+        this.birthday = birthday;
+        this.address = address;
+        this.email = email;
+        this.phone = phone;
+        this.status = status;
+        this.image = image;
+    }
+
+    public _student(String name, Long clazzId, Date birthday, String address, String email, String phone, int status, String image) {
+        this.name = name;
+        this.clazzId = clazzId;
+        this.birthday = birthday;
+        this.address = address;
+        this.email = email;
+        this.phone = phone;
+        this.status = status;
+        this.image = image;
+    }
+
 }

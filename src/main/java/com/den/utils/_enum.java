@@ -23,6 +23,15 @@ public final class _enum {
 
     public final int value;
 
+    public static StatusStudentEnum fromValue(int value) {
+      for (StatusStudentEnum status : values()) {
+        if (status.value == value) {
+          return status;
+        }
+      }
+      throw new IllegalArgumentException("Invalid value for StatusStudentEnum: " + value);
+    }
+
     private StatusStudentEnum(int value) {
       this.value = value;
     }
