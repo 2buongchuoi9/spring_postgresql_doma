@@ -6,13 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.den.entity._clazz;
-import com.den.exceptions.NotFoundError;
 import com.den.model.request.ClazzReq;
 import com.den.service.ClazzService;
 
 import jakarta.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,5 +60,4 @@ public class ClazzController {
   public ResponseEntity<_clazz> update(@PathVariable Long id, @RequestBody @Valid ClazzReq clazzReq) {
     return ResponseEntity.ok().body(clazzService.update(id, clazzReq));
   }
-
 }

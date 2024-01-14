@@ -36,8 +36,8 @@ public class SchoolServiceV2 {
   }
 
   public Page<_school> findAll(Pageable pageable) {
-    int offset = (pageable.getPageNumber() - 1) * pageable.getPageSize();
     int limit = pageable.getPageSize();
+    int offset = (pageable.getPageNumber()) * limit;
     SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
     List<_school> list = schoolDao.selectAll(options);
     int total = schoolDao.countAll(options);

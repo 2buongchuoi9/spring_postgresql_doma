@@ -35,7 +35,7 @@ public class ClazzControllerV2 {
             @RequestParam(name = "limit", defaultValue = "5") int limit,
             @RequestParam(name = "page", defaultValue = "1") int page
     ) {
-        return ResponseEntity.ok().body(clazzServiceV2.findAll(PageRequest.of(page, limit)));
+        return ResponseEntity.ok().body(clazzServiceV2.findAll(PageRequest.of(page-1, limit)));
     }
 
     @Operation(summary = "get one class")

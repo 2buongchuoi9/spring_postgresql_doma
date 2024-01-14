@@ -5,6 +5,7 @@ import com.den.entity._student;
 import com.den.exceptions.BabRequestError;
 import com.den.exceptions.UnKnowError;
 import com.den.model.ObjectResultExcel;
+import com.den.model.response.CustomPage;
 import com.den.model.response.MainRes;
 import com.den.service.CloudinaryService;
 import com.den.service.ExcelUploadService;
@@ -67,17 +68,17 @@ public class FileController {
             e.printStackTrace();
          throw new UnKnowError("err");
         }
-
-
     }
 
     @Operation(summary = "get all image")
     @GetMapping("/image")
-    public ResponseEntity<Page<_image>> getAllImage(
+    public ResponseEntity<CustomPage<_image>> getAllImage(
             @RequestParam(name = "limit", defaultValue = "20") int limit,
             @RequestParam(name = "page", defaultValue = "1") int page) {
 
-        return ResponseEntity.ok().body(imageService.findAll(PageRequest.of(page, limit)));
+        Page<_image> resutl = imageService.findAll(PageRequest.of(page -1, limit));
+
+        return ResponseEntity.ok().body(new CustomPage<_image>(resutl));
     }
 
     @Operation(summary = "delete image")

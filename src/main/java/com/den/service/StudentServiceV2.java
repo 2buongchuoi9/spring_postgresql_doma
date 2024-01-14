@@ -51,7 +51,7 @@ public class StudentServiceV2 {
         return studentDao.insert(student) == 1;
     }
 
-    public boolean add(_student student) throws  BabRequestError {
+    public boolean add(_student student) throws BabRequestError {
 //    check email
         if (student.getEmail() != null && !student.getEmail().isEmpty())
             Optional.ofNullable(studentDao.selectByEmail(student.getEmail())).ifPresent(v -> {
@@ -69,24 +69,22 @@ public class StudentServiceV2 {
     }
 
 
-
-
     public _student findById(Long id) {
         return Optional.ofNullable(studentDao.selectById(id)).orElseThrow(() -> new NotFoundError("not found school id=" + id));
     }
 
-    public Optional<_student> findByIdOptional(Long id){
-        if(id == null) return Optional.empty();
+    public Optional<_student> findByIdOptional(Long id) {
+        if (id == null) return Optional.empty();
         return Optional.ofNullable(studentDao.selectById(id));
     }
 
-    public List<_student> findAll(){
+    public List<_student> findAll() {
         return studentDao.selectAll();
     }
 
     public Page<_student> findAll(Pageable pageable) {
         int limit = pageable.getPageSize();
-        int offset = (pageable.getPageNumber() - 1) * limit;
+        int offset = (pageable.getPageNumber()) * limit;
         SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
 
         List<_student> list = studentDao.selectAll(options);
@@ -96,7 +94,7 @@ public class StudentServiceV2 {
 
     public Page<_student> search(Pageable pageable, String keySearch) {
         int limit = pageable.getPageSize();
-        int offset = (pageable.getPageNumber() - 1) * limit;
+        int offset = (pageable.getPageNumber()) * limit;
         SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
 
         List<_student> list = studentDao.selectByKeySearch(keySearch, options);
@@ -107,7 +105,7 @@ public class StudentServiceV2 {
 
     public Page<_student> findByClazzId(Pageable pageable, Long clazzId) {
         int limit = pageable.getPageSize();
-        int offset = (pageable.getPageNumber() - 1) * limit;
+        int offset = (pageable.getPageNumber()) * limit;
         SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
 
         List<_student> list = studentDao.selectByClazzId(clazzId, options);
@@ -119,7 +117,7 @@ public class StudentServiceV2 {
     public Page<_student> findBySchoolId(Pageable pageable, Long schoolId) {
 
         int limit = pageable.getPageSize();
-        int offset = (pageable.getPageNumber() - 1) * limit;
+        int offset = (pageable.getPageNumber()) * limit;
 
         SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
         List<_student> list = studentDao.selectBySchoolId(schoolId, options);
@@ -150,9 +148,10 @@ public class StudentServiceV2 {
 
         _student clazz = mapper.map(studentReq, _student.class);
         clazz.setId(id);
-        return studentDao.update(clazz)==1;
+        return studentDao.update(clazz) == 1;
     }
-    public boolean update(_student student) throws BabRequestError{
+
+    public boolean update(_student student) throws BabRequestError {
         Optional.ofNullable(studentDao.selectByEmailNotId(student.getEmail(), student.getId())).ifPresent(v -> {
             throw new BabRequestError("duplicate email=" + student.getEmail());
         });
@@ -164,7 +163,7 @@ public class StudentServiceV2 {
         if (countMember >= 40)
             throw new BabRequestError("class (" + student.getClazzId() + ") is not more 40 member (current is " + countMember + ")");
 
-        return studentDao.update(student)==1;
+        return studentDao.update(student) == 1;
     }
 
 }

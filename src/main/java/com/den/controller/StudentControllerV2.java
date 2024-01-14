@@ -7,18 +7,13 @@ import com.den.service.ExcelUploadService;
 import com.den.service.StudentServiceV2;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.models.annotations.OpenAPI30;
 import jakarta.validation.Valid;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v2/student")
@@ -41,7 +36,7 @@ public class StudentControllerV2 {
     @GetMapping("")
     public ResponseEntity<?> getAll(@RequestParam(name = "limit", defaultValue = "5") int limit, @RequestParam(name = "page", defaultValue = "1") int page) {
 
-        Pageable p = PageRequest.of(page, limit);
+        Pageable p = PageRequest.of(page -1, limit);
 
         Page<_student> list = studentServiceV2.findAll(p);
         System.out.println("pageee::::" + p.getPageNumber());
@@ -52,7 +47,7 @@ public class StudentControllerV2 {
     @GetMapping("/search/{keySearch}")
     public ResponseEntity<?> search(@PathVariable String keySearch, @RequestParam(name = "limit", defaultValue = "5") int limit, @RequestParam(name = "page", defaultValue = "1") int page) {
 
-        Page<_student> list = studentServiceV2.search(PageRequest.of(page, limit), keySearch);
+        Page<_student> list = studentServiceV2.search(PageRequest.of(page-1, limit), keySearch);
         return ResponseEntity.ok().body(new MainRes(list));
     }
 
@@ -68,7 +63,7 @@ public class StudentControllerV2 {
     public ResponseEntity<?> findByClazzId(
             @PathVariable Long clazzId, @RequestParam(name = "limit", defaultValue = "5") int limit,
             @RequestParam(name = "page", defaultValue = "1") int page) {
-        return ResponseEntity.ok().body(studentServiceV2.findByClazzId(PageRequest.of(page, limit), clazzId));
+        return ResponseEntity.ok().body(studentServiceV2.findByClazzId(PageRequest.of(page-1, limit), clazzId));
     }
 
     @Operation(summary = "get all student by schoolId")
@@ -76,7 +71,7 @@ public class StudentControllerV2 {
     public ResponseEntity<?> findBySchoolId(@PathVariable Long schoolId,
                                             @RequestParam(name = "limit", defaultValue = "5") int limit,
                                             @RequestParam(name = "page", defaultValue = "1") int page) {
-        return ResponseEntity.ok().body(studentServiceV2.findBySchoolId(PageRequest.of(page, limit), schoolId));
+        return ResponseEntity.ok().body(studentServiceV2.findBySchoolId(PageRequest.of(page-1, limit), schoolId));
     }
 
     @Operation(summary = "delete student")
@@ -90,8 +85,6 @@ public class StudentControllerV2 {
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid StudentReq studentReq) {
         return ResponseEntity.ok().body(studentServiceV2.update(id, studentReq));
     }
-
-
 
 
 }

@@ -17,46 +17,54 @@ import lombok.Data;
 
 @Data
 public class StudentReq {
-  @NotEmpty(message = "name must not empty")
-  private String name;
+    @NotEmpty(message = "name must not empty")
+    private String name;
 
-  @NotNull(message = "clazzId is must require")
-  @Min(value = 1, message = "clazzId must be greater than or equal to 1")
-  private Long clazzId;
+    @NotNull(message = "clazzId is must require")
+    @Min(value = 1, message = "clazzId must be greater than or equal to 1")
+    private Long clazzId;
 
-  @JsonFormat(pattern = "dd-MM-yyyy")
-  private Date birthday;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private Date birthday;
 
-  @NotNull(message = "address is must require")
-  private String address;
+    @NotNull(message = "address is must require")
+    private String address;
 
-  private String email;
+    private String email;
 
-  private String phone;
+    private String phone;
 
-  private int status = StatusStudentEnum.ACTIVE.value;
+    private int status = StatusStudentEnum.ACTIVE.value;
 
-  private String image;
+    private String image;
 
-  @AssertTrue(message = "Age must be greater than or equal to 16")
-  public boolean isAgeValid() {
-    if (birthday == null)
-      return true;
+    @AssertTrue(message = "Age must be greater than or equal to 12")
+    public boolean isAgeValid() {
+        if (birthday == null)
+            return true;
 
-    LocalDate birthDate = LocalDate.ofInstant(birthday.toInstant(), java.time.ZoneId.systemDefault());
-    LocalDate currentDate = LocalDate.now();
+        LocalDate birthDate = LocalDate.ofInstant(birthday.toInstant(), java.time.ZoneId.systemDefault());
+        LocalDate currentDate = LocalDate.now();
 
-    Period period = Period.between(birthDate, currentDate);
-    int age = period.getYears();
+        Period period = Period.between(birthDate, currentDate);
+        int age = period.getYears();
 
-    return age >= 16;
-  }
+        return age >= 12;
+    }
 
-  @AssertTrue(message = "email must null or must valid")
-  public boolean isEmailValid() {
-    if (email == null || email.isEmpty())
-      return true;
+    @AssertTrue(message = "email must null or must valid")
+    public boolean isEmailValid() {
+        if (email == null)
+            return true;
 
-    return Pattern.matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$", email);
-  }
+        return Pattern.matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$", email);
+    }
+
+    @AssertTrue(message = "phone must null or must valid (length: 10->12, start with '0')")
+    public boolean isPhoneValid() {
+        if (phone == null)
+            return true;
+        return Pattern.matches("^0[0-9]{9,11}$", phone);
+
+    }
 }

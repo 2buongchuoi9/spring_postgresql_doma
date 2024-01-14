@@ -27,10 +27,13 @@ public class ExcelUploadService {
     private final String[] HEADERS = {"Stt", "Status", "Error"};
 
 
-    @Autowired
-    private SimpleDateFormat simpleDateFormat;
-    @Autowired
-    private StudentServiceV2 studentServiceV2;
+    private final SimpleDateFormat simpleDateFormat;
+    private final StudentServiceV2 studentServiceV2;
+
+    public ExcelUploadService(SimpleDateFormat simpleDateFormat, StudentServiceV2 studentServiceV2) {
+        this.simpleDateFormat = simpleDateFormat;
+        this.studentServiceV2 = studentServiceV2;
+    }
 
     public boolean isValidExcelFile(MultipartFile file) {
         return Objects.equals(file.getContentType(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -78,8 +81,8 @@ public class ExcelUploadService {
                 result.add(new ObjectResultExcel(index, ObjectResultExcel.FAIL, "status must require"));
                 continue;
             }
-            if(!(phone+"").matches("^[1-9]\\d{8,11}$")){
-                result.add(new ObjectResultExcel(index, ObjectResultExcel.FAIL, "phone is must number and length to 9->12"));
+            if(!(phone+"").matches("^[1-9]\\d{8,10}$")){
+                result.add(new ObjectResultExcel(index, ObjectResultExcel.FAIL, "phone is must number and length to 9->11"));
                 continue;
             }
 

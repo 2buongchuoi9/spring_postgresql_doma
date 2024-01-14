@@ -36,8 +36,8 @@ public class ClazzServiceV2 {
     }
 
     public Page<_clazz> findAll(Pageable pageable) {
-        int offset = (pageable.getPageNumber() - 1) * pageable.getPageSize();
         int limit = pageable.getPageSize();
+        int offset = pageable.getPageNumber()  * limit;
         SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
         List<_clazz> list = clazzDao.selectAll(options);
         int total = clazzDao.countAll(options);

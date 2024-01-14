@@ -14,10 +14,13 @@ import com.den.entity._school_;
 @Repository
 public class SchoolRepo implements MainRepo<_school, Long> {
 
-  @Autowired
-  private Entityql entityql;
-  @Autowired
-  private NativeSql nativeSql;
+  private final Entityql entityql;
+  private final NativeSql nativeSql;
+
+  public SchoolRepo(Entityql entityql, NativeSql nativeSql) {
+    this.entityql = entityql;
+    this.nativeSql = nativeSql;
+  }
 
   @Override
   public _school insert(_school t) {
