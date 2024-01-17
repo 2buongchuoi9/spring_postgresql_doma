@@ -32,7 +32,6 @@ public interface ClazzDao {
     @Select
     int countAll(SelectOptions options);
 
-
     @Select
     _clazz selectByCodeNotId(String code, Long id);
 

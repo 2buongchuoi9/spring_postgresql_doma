@@ -11,7 +11,6 @@ import org.seasar.doma.jdbc.SelectOptions;
 
 import com.den.entity._school;
 
-
 @Dao
 @ConfigAutowireable
 public interface SchoolDao {
@@ -33,6 +32,5 @@ public interface SchoolDao {
 
   @Select
   _school selectByName(String name);
-
 
 }

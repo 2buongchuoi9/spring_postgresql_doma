@@ -20,7 +20,7 @@ public interface StudentDao {
     int update(_student student);
 
     @Delete(sqlFile = true)
-     int delete(Long id) ;
+    int delete(Long id);
 
     @Select
     _student selectByEmail(String email);
@@ -35,7 +35,7 @@ public interface StudentDao {
     _student selectById(Long id);
 
     @Select
-    List<_student> selectByClazzId(Long clazzId,SelectOptions options);
+    List<_student> selectByClazzId(Long clazzId, SelectOptions options);
 
     @Select
     int countByClazzId(Long clazzId);
@@ -44,7 +44,7 @@ public interface StudentDao {
     int countAll();
 
     @Select
-    List<_student> selectByKeySearch(String keySearch,SelectOptions options);
+    List<_student> selectByKeySearch(String keySearch, SelectOptions options);
 
     @Select
     int countByKeySearch(String keySearch);
@@ -57,6 +57,5 @@ public interface StudentDao {
 
     @Select
     _student selectByEmailNotId(String email, Long id);
-
 
 }
