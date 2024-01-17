@@ -13,11 +13,12 @@ public class CustomPage<T> {
     private int pageSize;
     private long totalElement;
     private int totalPage;
-    public CustomPage(Page<T> pageImpl) {
+    public CustomPage(PageImpl<T> pageImpl) {
+        System.out.println(pageImpl);
         this.content=pageImpl.getContent();
-        this.page = pageImpl.getPageable().getPageNumber()+1;
+        this.page = pageImpl.getNumber()+1;
         this.pageSize=pageImpl.getPageable().getPageSize();
         this.totalElement = pageImpl.getTotalElements();
-        this.totalPage = pageImpl.getTotalPages();
+        this.totalPage = (int) Math.ceil((double) this.totalElement / this.pageSize);
     }
 }

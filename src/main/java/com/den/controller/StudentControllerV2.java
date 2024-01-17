@@ -2,6 +2,7 @@ package com.den.controller;
 
 import com.den.entity._student;
 import com.den.model.request.StudentReq;
+import com.den.model.response.CustomPage;
 import com.den.model.response.MainRes;
 import com.den.service.ExcelUploadService;
 import com.den.service.StudentServiceV2;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,21 +36,23 @@ public class StudentControllerV2 {
 
     @Operation(summary = "get all student ")
     @GetMapping("")
-    public ResponseEntity<?> getAll(@RequestParam(name = "limit", defaultValue = "5") int limit, @RequestParam(name = "page", defaultValue = "1") int page) {
+    public ResponseEntity<CustomPage<_student>> getAll(
+            @RequestParam(name = "limit", defaultValue = "5") int limit,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "status", required = false) Integer status) {
 
-        Pageable p = PageRequest.of(page -1, limit);
 
-        Page<_student> list = studentServiceV2.findAll(p);
-        System.out.println("pageee::::" + p.getPageNumber());
-        return ResponseEntity.ok().body(new MainRes(list));
+        CustomPage<_student> result = new CustomPage<_student>(studentServiceV2.findAll(PageRequest.of(page - 1, limit), status));
+        System.out.println(result);
+        return ResponseEntity.ok().body(result);
     }
 
     @Operation(summary = "search student for key search")
     @GetMapping("/search/{keySearch}")
-    public ResponseEntity<?> search(@PathVariable String keySearch, @RequestParam(name = "limit", defaultValue = "5") int limit, @RequestParam(name = "page", defaultValue = "1") int page) {
+    public ResponseEntity<CustomPage<_student>> search(@PathVariable String keySearch, @RequestParam(name = "limit", defaultValue = "5") int limit, @RequestParam(name = "page", defaultValue = "1") int page) {
 
-        Page<_student> list = studentServiceV2.search(PageRequest.of(page-1, limit), keySearch);
-        return ResponseEntity.ok().body(new MainRes(list));
+        CustomPage<_student> result = new CustomPage<>(studentServiceV2.search(PageRequest.of(page - 1, limit), keySearch));
+        return ResponseEntity.ok().body(result);
     }
 
 
@@ -60,18 +64,22 @@ public class StudentControllerV2 {
 
     @Operation(summary = "get all student by clazzId ")
     @GetMapping("/class/{clazzId}")
-    public ResponseEntity<?> findByClazzId(
-            @PathVariable Long clazzId, @RequestParam(name = "limit", defaultValue = "5") int limit,
-            @RequestParam(name = "page", defaultValue = "1") int page) {
-        return ResponseEntity.ok().body(studentServiceV2.findByClazzId(PageRequest.of(page-1, limit), clazzId));
+    public ResponseEntity<CustomPage<_student>> findByClazzId(
+            @PathVariable Long clazzId,
+            @RequestParam(name = "limit", defaultValue = "5") int limit,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "status", required = false) Integer status) {
+        return ResponseEntity.ok().body(new CustomPage<_student>(studentServiceV2.findByClazzId(PageRequest.of(page - 1, limit), clazzId,status)));
     }
 
     @Operation(summary = "get all student by schoolId")
     @GetMapping("/school/{schoolId}")
-    public ResponseEntity<?> findBySchoolId(@PathVariable Long schoolId,
-                                            @RequestParam(name = "limit", defaultValue = "5") int limit,
-                                            @RequestParam(name = "page", defaultValue = "1") int page) {
-        return ResponseEntity.ok().body(studentServiceV2.findBySchoolId(PageRequest.of(page-1, limit), schoolId));
+    public ResponseEntity<CustomPage<_student>> findBySchoolId(
+            @PathVariable Long schoolId,
+            @RequestParam(name = "limit", defaultValue = "5") int limit,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "status", required = false) Integer status) {
+        return ResponseEntity.ok().body(new CustomPage<_student>(studentServiceV2.findBySchoolId(PageRequest.of(page - 1, limit), schoolId,status)));
     }
 
     @Operation(summary = "delete student")

@@ -33,7 +33,7 @@ public class SchoolRepo implements MainRepo<_school, Long> {
     _school_ s = new _school_();
     return nativeSql.update(s)
         .set(v -> {
-          v.value(s.adrress, t.getAdrress());
+          v.value(s.address, t.getAddress());
           v.value(s.email, t.getEmail());
           v.value(s.logo, t.getLogo());
           v.value(s.name, t.getName());

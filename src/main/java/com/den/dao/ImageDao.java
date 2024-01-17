@@ -23,7 +23,7 @@ public interface ImageDao {
     List<_image> selectAll(SelectOptions options);
 
     @Select
-    int countAll(SelectOptions options);
+    int countAll();
 
     @Select
     _image selectById(Long id);

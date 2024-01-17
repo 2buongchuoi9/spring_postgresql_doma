@@ -1,2 +1,2 @@
 select count(id)
-from student
+from school

@@ -36,14 +36,13 @@ public class ImageService {
         return image;
     }
 
-    public Page<_image> findAll(Pageable pageable) {
+    public PageImpl<_image> findAll(Pageable pageable) {
         int limit = pageable.getPageSize();
-        int offset = pageable.getPageNumber()  * limit;
+        int offset = pageable.getPageNumber() * limit;
         SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
 
         List<_image> list = imageDao.selectAll(options);
-        int total = imageDao.countAll(options);
-
+        int total = imageDao.countAll();
         return new PageImpl<>(list, pageable, total);
     }
 

@@ -15,11 +15,11 @@ public class StudentLisTener implements EntityListener<_student> {
 
   @Override
   public void postInsert(_student entity, PostInsertContext<_student> context) {
-    entity.setCode("PS" + String.format("%03d", entity.getId()));
+    entity.setCode("PS" + String.format("%04d", entity.getId()));
 
   }
 
   private void updateCode(_student entity) {
-    entity.setCode("PS" + String.format("%03d", entity.getId()));
+    entity.setCode("PS" + String.format("%04d", entity.getId()));
   }
 }

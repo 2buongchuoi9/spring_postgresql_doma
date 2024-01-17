@@ -2,6 +2,7 @@ package com.den.controller;
 
 import com.den.entity._school;
 import com.den.model.request.SchoolReq;
+import com.den.model.response.CustomPage;
 import com.den.service.SchoolServiceV2;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,10 +31,12 @@ public class SchoolControllerV2 {
   }
     @Operation(summary = "get all school")
   @GetMapping("")
-  public ResponseEntity<Page<_school>> getAll(
+  public ResponseEntity<CustomPage<_school>> getAll(
       @RequestParam(name = "limit", defaultValue = "5") int limit,
       @RequestParam(name = "page", defaultValue = "1") int page) {
-    return ResponseEntity.ok().body(schoolServiceV2.findAll(PageRequest.of(page-1, limit)));
+    CustomPage<_school> result = new CustomPage<_school>(schoolServiceV2.findAll(PageRequest.of(page-1, limit)));
+      System.out.println(result);
+    return ResponseEntity.ok().body(result);
   }
 
     @Operation(summary = "get one school")

@@ -1,8 +1,8 @@
 select count(*)
 from student
 where
-    lower(name) like '%' || /*keySearch*/')))))))))))))))))))' || '%'
-    or lower(code) like '%' || /*keySearch*/')))))))))))))))))))' || '%'
-    or lower(address) like '%' || /*keySearch*/')))))))))))))))))))' || '%'
-    or lower(email) like '%' || /*keySearch*/')))))))))))))))))))' || '%'
-    or lower(phone) like '%' || /*keySearch*/')))))))))))))))))))' || '%'
+    unaccent(name) like '%' || unaccent(/*keySearch*/'_') || '%'
+   or unaccent(code) like '%' || unaccent(/*keySearch*/'_') || '%'
+   or unaccent(address) like '%' || unaccent(/*keySearch*/'_') || '%'
+   or unaccent(email) like '%' || unaccent(/*keySearch*/'_') || '%'
+   or unaccent(phone) like '%' || unaccent(/*keySearch*/'_') || '%'

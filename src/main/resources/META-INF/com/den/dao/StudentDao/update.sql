@@ -6,5 +6,5 @@ set name     = /*student.name*/'',
     email    = /*student.email*/'',
     phone    = /*student.phone*/'',
     status   = /*student.status*/'',
-    image    = /*student.image*/'',
+    image    = /*student.image*/''
 where id = /*student.id*/0

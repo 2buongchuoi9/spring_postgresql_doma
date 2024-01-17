@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -75,10 +76,7 @@ public class FileController {
     public ResponseEntity<CustomPage<_image>> getAllImage(
             @RequestParam(name = "limit", defaultValue = "20") int limit,
             @RequestParam(name = "page", defaultValue = "1") int page) {
-
-        Page<_image> resutl = imageService.findAll(PageRequest.of(page -1, limit));
-
-        return ResponseEntity.ok().body(new CustomPage<_image>(resutl));
+        return ResponseEntity.ok().body(new CustomPage<_image>(imageService.findAll(PageRequest.of(page -1, limit))));
     }
 
     @Operation(summary = "delete image")

@@ -22,7 +22,7 @@ public class _school {
 
   private String name;
 
-  private String adrress;
+  private String address;
 
   private String email;
 

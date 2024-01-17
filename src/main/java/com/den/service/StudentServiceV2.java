@@ -8,6 +8,7 @@ import com.den.exceptions.DuplicateRecordError;
 import com.den.exceptions.NotFoundError;
 import com.den.exceptions.UnKnowError;
 import com.den.model.request.StudentReq;
+import com.den.model.response.CustomPage;
 import com.den.utils._enum;
 import org.modelmapper.ModelMapper;
 import org.seasar.doma.jdbc.SelectOptions;
@@ -82,17 +83,33 @@ public class StudentServiceV2 {
         return studentDao.selectAll();
     }
 
-    public Page<_student> findAll(Pageable pageable) {
+    public PageImpl<_student> findAll(Pageable pageable) {
+        return findAll(pageable, null);
+    }
+
+    public PageImpl<_student> findAll(Pageable pageable, Integer status) {
+
         int limit = pageable.getPageSize();
         int offset = (pageable.getPageNumber()) * limit;
+
+
         SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
 
-        List<_student> list = studentDao.selectAll(options);
-        int total = studentDao.countAll();
+        List<_student> list;
+        int total;
+
+        if (status != null && status < 5 && status > -1) {
+            list = studentDao.selectByStatus(options, status);
+            total = studentDao.countByStatus(status);
+        } else {
+            list = studentDao.selectAll(options);
+            total = studentDao.countAll();
+        }
+
         return new PageImpl<>(list, pageable, total);
     }
 
-    public Page<_student> search(Pageable pageable, String keySearch) {
+    public PageImpl<_student> search(Pageable pageable, String keySearch) {
         int limit = pageable.getPageSize();
         int offset = (pageable.getPageNumber()) * limit;
         SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
@@ -103,25 +120,33 @@ public class StudentServiceV2 {
         return new PageImpl<>(list, pageable, total);
     }
 
-    public Page<_student> findByClazzId(Pageable pageable, Long clazzId) {
+
+    public PageImpl<_student> findByClazzId(Pageable pageable, Long clazzId, Integer status) {
         int limit = pageable.getPageSize();
         int offset = (pageable.getPageNumber()) * limit;
         SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
 
-        List<_student> list = studentDao.selectByClazzId(clazzId, options);
-        int total = studentDao.countByClazzId(clazzId);
+        if ((status != null && status > 4) || (status != null && status < 0))
+            throw new BabRequestError("status must from 0 to 4");
+
+        List<_student> list = studentDao.selectByClazzId(options, clazzId, status);
+        int total = studentDao.countByClazzId(clazzId, status);
 
         return new PageImpl<>(list, pageable, total);
     }
 
-    public Page<_student> findBySchoolId(Pageable pageable, Long schoolId) {
 
+    public PageImpl<_student> findBySchoolId(Pageable pageable, Long schoolId, Integer status) {
         int limit = pageable.getPageSize();
         int offset = (pageable.getPageNumber()) * limit;
 
         SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
-        List<_student> list = studentDao.selectBySchoolId(schoolId, options);
-        int total = studentDao.countBySchoolId(schoolId);
+
+        if ((status != null && status > 4) || (status != null && status < 0))
+            throw new BabRequestError("status must from 0 to 4");
+
+        List<_student> list = studentDao.selectBySchoolId(options, schoolId, status);
+        int total = studentDao.countBySchoolId(schoolId, status);
 
         return new PageImpl<>(list, pageable, total);
     }

@@ -19,7 +19,7 @@ public interface SchoolDao {
   List<_school> selectAll(SelectOptions options);
 
   @Select
-  int countAll(SelectOptions options);
+  int countAll();
 
   @Insert
   int insert(_school school);

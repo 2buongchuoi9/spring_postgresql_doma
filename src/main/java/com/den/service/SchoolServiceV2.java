@@ -35,12 +35,13 @@ public class SchoolServiceV2 {
     return schoolDao.insert(school) == 1;
   }
 
-  public Page<_school> findAll(Pageable pageable) {
+  public PageImpl<_school> findAll(Pageable pageable) {
     int limit = pageable.getPageSize();
-    int offset = (pageable.getPageNumber()) * limit;
+    int offset = pageable.getPageNumber() * limit;
     SelectOptions options = SelectOptions.get().limit(limit).offset(offset);
+
     List<_school> list = schoolDao.selectAll(options);
-    int total = schoolDao.countAll(options);
+    int total = schoolDao.countAll();
     return new PageImpl<>(list, pageable, total);
   }
 
