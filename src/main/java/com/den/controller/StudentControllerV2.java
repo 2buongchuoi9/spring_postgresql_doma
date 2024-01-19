@@ -2,6 +2,7 @@ package com.den.controller;
 
 import com.den.entity._student;
 import com.den.model.request.StudentReq;
+import com.den.model.request.StudentUpdateManyReq;
 import com.den.model.response.CustomPage;
 import com.den.model.response.MainRes;
 import com.den.service.ExcelUploadService;
@@ -15,6 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -30,17 +34,20 @@ public class StudentControllerV2 {
 
     @Operation(summary = "add student")
     @PostMapping("")
-    public ResponseEntity<?> add(@RequestBody @Valid StudentReq studentReq) {
+    public ResponseEntity<_student> add(@RequestBody @Valid StudentReq studentReq) {
         return ResponseEntity.ok().body(studentServiceV2.add(studentReq));
     }
 
     @Operation(summary = "get all student ")
     @GetMapping("")
     public ResponseEntity<CustomPage<_student>> getAll(
-            @RequestParam(name = "limit", defaultValue = "5") int limit,
-            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "limit", defaultValue = "5", required = false) Integer limit,
+            @RequestParam(name = "page", defaultValue = "1",  required = false) Integer page,
             @RequestParam(name = "status", required = false) Integer status) {
 
+
+
+//        if(limit !=null && page !=null)
 
         CustomPage<_student> result = new CustomPage<_student>(studentServiceV2.findAll(PageRequest.of(page - 1, limit), status));
         System.out.println(result);
@@ -90,8 +97,15 @@ public class StudentControllerV2 {
 
     @Operation(summary = "update student")
     @PostMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid StudentReq studentReq) {
+    public ResponseEntity<_student> update(@PathVariable Long id, @RequestBody @Valid StudentReq studentReq) {
         return ResponseEntity.ok().body(studentServiceV2.update(id, studentReq));
+    }
+
+
+    @Operation(summary = "update many student just colum(status, clazzId), return list id is fail to update, null if all success")
+    @PostMapping("/update-many")
+    public ResponseEntity<Boolean> update(@RequestBody @Valid StudentUpdateManyReq studentUpdateManyReq) {
+        return ResponseEntity.ok().body(studentServiceV2.updateMany(studentUpdateManyReq));
     }
 
 

@@ -3,6 +3,7 @@ package com.den.dao;
 import com.den.entity._student;
 import org.seasar.doma.*;
 import org.seasar.doma.boot.ConfigAutowireable;
+import org.seasar.doma.jdbc.Result;
 import org.seasar.doma.jdbc.SelectOptions;
 import org.springframework.data.domain.Page;
 
@@ -63,4 +64,13 @@ public interface StudentDao {
 
     @Select
     int countBySchoolId(Long schoolId, Integer status);
+
+    @BatchUpdate(include = {"status"})
+    int[] updateManySetStatus(List<_student> list);
+
+    @BatchUpdate(include = {"clazzId"})
+    int[] updateManySetClazzId(List<_student> list);
+
+    @BatchUpdate(include = {"status", "clazzId"})
+    int[] updateManySetStatusAndClazzId(List<_student> list);
 }

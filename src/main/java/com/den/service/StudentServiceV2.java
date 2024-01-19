@@ -8,6 +8,7 @@ import com.den.exceptions.DuplicateRecordError;
 import com.den.exceptions.NotFoundError;
 import com.den.exceptions.UnKnowError;
 import com.den.model.request.StudentReq;
+import com.den.model.request.StudentUpdateManyReq;
 import com.den.model.response.CustomPage;
 import com.den.utils._enum;
 import org.modelmapper.ModelMapper;
@@ -18,8 +19,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceV2 {
@@ -34,7 +35,7 @@ public class StudentServiceV2 {
     }
 
 
-    public boolean add(StudentReq studentReq) {
+    public _student add(StudentReq studentReq) {
 //    check email
         if (studentReq.getEmail() != null && !studentReq.getEmail().isEmpty())
             Optional.ofNullable(studentDao.selectByEmail(studentReq.getEmail())).ifPresent(v -> {
@@ -49,7 +50,8 @@ public class StudentServiceV2 {
             throw new BabRequestError("class (" + studentReq.getClazzId() + ") is not more 40 member (current is " + countMember + ")");
 
         _student student = mapper.map(studentReq, _student.class);
-        return studentDao.insert(student) == 1;
+         studentDao.insert(student);
+         return studentDao.selectByEmail(studentReq.getEmail());
     }
 
     public boolean add(_student student) throws BabRequestError {
@@ -65,6 +67,7 @@ public class StudentServiceV2 {
         int countMember = clazzDao.countById(student.getClazzId());
         if (countMember >= 40)
             throw new BabRequestError("class (" + student.getClazzId() + ") is not more 40 member (current is " + countMember + ")");
+
 
         return studentDao.insert(student) == 1;
     }
@@ -159,7 +162,7 @@ public class StudentServiceV2 {
     }
 
 
-    public boolean update(Long id, StudentReq studentReq) {
+    public _student update(Long id, StudentReq studentReq) {
         Optional.ofNullable(studentDao.selectByEmailNotId(studentReq.getEmail(), id)).ifPresent(v -> {
             throw new DuplicateRecordError("duplicate email=" + studentReq.getEmail());
         });
@@ -173,7 +176,8 @@ public class StudentServiceV2 {
 
         _student clazz = mapper.map(studentReq, _student.class);
         clazz.setId(id);
-        return studentDao.update(clazz) == 1;
+         studentDao.update(clazz);
+         return studentDao.selectById(id);
     }
 
     public boolean update(_student student) throws BabRequestError {
@@ -191,4 +195,22 @@ public class StudentServiceV2 {
         return studentDao.update(student) == 1;
     }
 
+    public boolean updateMany(StudentUpdateManyReq studentUpdateManyReq) {
+        boolean isStatus = studentUpdateManyReq.getStatus() != null;
+        boolean isClazzId = studentUpdateManyReq.getClazzId() != null;
+        List<_student> list = Arrays.stream(studentUpdateManyReq.getIds())
+                .map(v -> {
+                    _student std = new _student();
+                    std.setId(v);
+                    std.setClazzId(studentUpdateManyReq.getClazzId());
+                    std.setStatus(studentUpdateManyReq.getStatus());
+                    return std;
+                }).toList();
+
+
+        if(isStatus) studentDao.updateManySetStatus(list);
+        if(isClazzId) studentDao.updateManySetClazzId(list);
+
+        return true;
+    }
 }
