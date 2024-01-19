@@ -63,4 +63,7 @@ public interface StudentDao {
 
     @Select
     int countBySchoolId(Long schoolId, Integer status);
+
+    @BatchUpdate(include = {"status","clazzId"})
+    int[] updateManySetStatusOrClazzId(List<_student> students);
 }

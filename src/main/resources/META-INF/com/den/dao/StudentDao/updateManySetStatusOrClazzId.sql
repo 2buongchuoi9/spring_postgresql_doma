@@ -4,5 +4,5 @@ set
     status = /*status*/0,
     /*%elseif clazzId != null*/
     clazzId = /*clazzId*/0,
-    id = /*students.id*/
+    id = /*students.id*/0
 where id = /*students.id*/

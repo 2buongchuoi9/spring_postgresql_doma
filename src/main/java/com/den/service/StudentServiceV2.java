@@ -8,6 +8,7 @@ import com.den.exceptions.DuplicateRecordError;
 import com.den.exceptions.NotFoundError;
 import com.den.exceptions.UnKnowError;
 import com.den.model.request.StudentReq;
+import com.den.model.request.StudentUpdateManyReq;
 import com.den.model.response.CustomPage;
 import com.den.utils._enum;
 import org.modelmapper.ModelMapper;
@@ -18,7 +19,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -191,4 +194,26 @@ public class StudentServiceV2 {
         return studentDao.update(student) == 1;
     }
 
+    public List<Map<Long, String>> updateMany(StudentUpdateManyReq studentUpdateManyReq) {
+        List<Map<Long, String>> result = new ArrayList<>();
+        List<_student> list = new ArrayList<>();
+
+        for (Long l : studentUpdateManyReq.getIds()) {
+            Optional<_student> optionalStudent = Optional.ofNullable(studentDao.selectById(l));
+            if (optionalStudent.isPresent()) {
+                _student std = optionalStudent.get();
+                if (studentUpdateManyReq.getStatus() != null)
+                    std.setStatus(studentUpdateManyReq.getStatus());
+                if (studentUpdateManyReq.getClazzId() != null)
+                    std.setClazzId(studentUpdateManyReq.getClazzId());
+                list.add(optionalStudent.get());
+            } else
+                result.add(Map.of(l, "not found student id=" + l));
+        }
+
+        if (!list.isEmpty()) {
+            studentDao.updateManySetStatusOrClazzId(list);
+        }
+        return result;
+    }
 }

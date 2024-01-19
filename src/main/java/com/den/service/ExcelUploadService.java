@@ -68,8 +68,17 @@ public class ExcelUploadService {
             String name = getCellValue(row.getCell(NAME), String.class);
             int phone = getCellValue(row.getCell(PHONE), Integer.class);
             String address = getCellValue(row.getCell(ADDRESS), String.class);
-            Long clazzId = getCellValue(row.getCell(CLAZZ), Long.class);
-            String status = getCellValue(row.getCell(STATUS), String.class);
+
+            Long clazzId;
+            try {
+//                System.out.println(":::::::::::::::::::::::::"+row.getCell(CLAZZ).getCellType().name());
+                clazzId = getCellValue(row.getCell(CLAZZ), Long.class);
+            }catch (Exception e){
+                result.add(new ObjectResultExcel(index, ObjectResultExcel.FAIL, e.getMessage()));
+                continue;
+            }
+
+            Integer status = getCellValue(row.getCell(STATUS), Integer.class);
             String birthdaySTR = getCellValue(row.getCell(BIRTHDAY), String.class);
             String image = getCellValue(row.getCell(IMAGE), String.class);
             Date birthday = null;
@@ -77,10 +86,14 @@ public class ExcelUploadService {
             if (address == null || address.isEmpty()) {
                 result.add(new ObjectResultExcel(index, ObjectResultExcel.FAIL, "address must require"));
                 continue;
-            } else if (status == null || status.isEmpty()) {
+            } else if (status == null || status<0 || status>4) {
+                System.out.println("sttttt::::"+status);
                 result.add(new ObjectResultExcel(index, ObjectResultExcel.FAIL, "status must require"));
                 continue;
             }
+
+
+
             if(!(phone+"").matches("^[1-9]\\d{8,10}$")){
                 result.add(new ObjectResultExcel(index, ObjectResultExcel.FAIL, "phone is must number and length to 9->11"));
                 continue;
@@ -98,8 +111,12 @@ public class ExcelUploadService {
 
 //            insert
             if (id == null || optionalStudent.isEmpty()) {
+//                studentServiceV2.findByEmail(String email);
+//                studentServiceV2.findByEmailNotId(String email,Long id);
+
+
                     try {
-                        _student std = new _student(name, clazzId, birthday, address, email, "0" + phone, _enum.getEnumFromString(status).value, image);
+                        _student std = new _student(name, clazzId, birthday, address, email, "0" + phone, status, image);
                         studentServiceV2.add(std);
                         result.add(new ObjectResultExcel(index, ObjectResultExcel.INSERTED, ""));
                     } catch (BabRequestError e) {
@@ -110,7 +127,7 @@ public class ExcelUploadService {
 //                update
             } else {
                 try {
-                    _student std = new _student(id, name, clazzId, birthday, address, email, "0" + phone, _enum.getEnumFromString(status).value, image);
+                    _student std = new _student(id, name, clazzId, birthday, address, email, "0" + phone,status, image);
                     studentServiceV2.update(std);
                     result.add(new ObjectResultExcel(index, ObjectResultExcel.UPDATED, ""));
                 } catch (BabRequestError e) {
@@ -125,15 +142,17 @@ public class ExcelUploadService {
     }
 
     private <T> T getCellValue(Cell cell, Class<T> clazz) {
-
         if (cell != null) {
             if (clazz == Long.class && cell.getCellType() == CellType.NUMERIC) {
-                return clazz.cast(Double.valueOf(cell.getNumericCellValue()).longValue());
+                if (CellType.NUMERIC.equals(cell.getCellType())) {
+                    return clazz.cast((long) cell.getNumericCellValue());
+                }
             } else if (clazz == String.class && cell.getCellType() == CellType.STRING) {
                 return clazz.cast(cell.getStringCellValue());
-            }
-            if (clazz == Integer.class && cell.getCellType() == CellType.NUMERIC) {
-                return clazz.cast(Double.valueOf(cell.getNumericCellValue()).intValue());
+            } else if (clazz == Integer.class && cell.getCellType() == CellType.NUMERIC) {
+                if (CellType.NUMERIC.equals(cell.getCellType())) {
+                    return clazz.cast((int) cell.getNumericCellValue());
+                }
             }
         }
 

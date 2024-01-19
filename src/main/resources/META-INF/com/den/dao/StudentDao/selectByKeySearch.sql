@@ -6,3 +6,4 @@ where
     or unaccent(address) like '%' || unaccent(/*keySearch*/'_') || '%'
     or unaccent(email) like '%' || unaccent(/*keySearch*/'_') || '%'
     or unaccent(phone) like '%' || unaccent(/*keySearch*/'_') || '%'
+order by id

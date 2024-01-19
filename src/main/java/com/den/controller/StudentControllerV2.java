@@ -2,6 +2,7 @@ package com.den.controller;
 
 import com.den.entity._student;
 import com.den.model.request.StudentReq;
+import com.den.model.request.StudentUpdateManyReq;
 import com.den.model.response.CustomPage;
 import com.den.model.response.MainRes;
 import com.den.service.ExcelUploadService;
@@ -15,6 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -92,6 +96,13 @@ public class StudentControllerV2 {
     @PostMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid StudentReq studentReq) {
         return ResponseEntity.ok().body(studentServiceV2.update(id, studentReq));
+    }
+
+
+    @Operation(summary = "update many student just colum(status, clazzId), return list id is fail to update, null if all success")
+    @PostMapping("/update-many")
+    public ResponseEntity<List<Map<Long,String>>> update(@RequestBody @Valid StudentUpdateManyReq studentUpdateManyReq) {
+        return ResponseEntity.ok().body(studentServiceV2.updateMany(studentUpdateManyReq));
     }
 
 

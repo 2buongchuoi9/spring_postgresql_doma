@@ -6,3 +6,4 @@ where sc.id = /*schoolId*/0
     /*%if status != null*/
     and s.status = /*status*/0
 /*%end*/
+order by id
